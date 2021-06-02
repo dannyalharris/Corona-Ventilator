@@ -4,3 +4,115 @@
     ViewData["Title"] = "Patient's Data";
 }
 <h1>Patient's Data</h1>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                BAR CHART
+            </div>
+            <div class="card-body">
+                <canvas class="my-4 h-25" id="bar"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                PIE CHART
+            </div>
+            <div class="card-body">
+                <canvas class="my-4 h-25" id="pie"></canvas>
+            </div>
+        </div>
+    </div>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+@*<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>*@
+
+<script type="text/javascript">
+    var barchart = document.getElementById('bar').getContext('2d');
+    var mybarchart = new Chart(barchart, {
+        type: 'bar',
+        data: {
+            labels: ['001', '002', '003'],
+            datasets: [{
+                label: 'Bar Chart',
+                data: [100, 200, 300],
+                backgroundcolor: 'rgba(100,128,200)'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    })
+
+    var piechart = document.getElementById('pie').getContext('2d');
+    var mypiechart = new Chart(piechart, {
+        type: 'pie',
+        data: {
+            labels: ['001', '002', '003'],
+            datasets: [{
+                label: 'Pie Chart',
+                data: [100, 200, 300],
+                backgroundcolor: 'rgba(6,128,122)'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    })
+</script>
+
+@*<script>
+    window.onload = function () {
+
+        var dataPoints = [];
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light2",
+            title: {
+                text: "Lenovo Group Stock Price-2017"
+            },
+            axisY: {
+                title: "In HK$",
+                titleFontSize: 24
+            },
+            data: [{
+                type: "line",
+                yValueFormatString: "HK$#,###",
+                dataPoints: dataPoints
+            }]
+        });
+
+        function addData(data) {
+            for (var i = 0; i < data.length; i++) {
+                dataPoints.push({
+                    x: new Date(data[i].x),
+                    y: data[i].y
+                });
+            }
+            chart.render();
+
+        }
+
+        $.getJSON("/home/json", addData);
+
+    }
+</script>*@
+
