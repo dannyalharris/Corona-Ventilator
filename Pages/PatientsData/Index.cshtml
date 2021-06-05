@@ -30,7 +30,26 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 @*<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>*@
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>*@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="//cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+
+    <script src="//cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+    <title>ColumnChart</title>
+</head>
+
+<body>
+    <form method="post">
+        <div>@Html.Raw(Model.ChartJson)</div>
+        <br />
+    </form>
+</body>
+</html>
 
 <script type="text/javascript">
     var barchart = document.getElementById('bar').getContext('2d');
@@ -79,40 +98,40 @@
 </script>
 
 @*<script>
-    window.onload = function () {
+        window.onload = function () {
 
-        var dataPoints = [];
+            var dataPoints = [];
 
-        var chart = new CanvasJS.Chart("chartContainer", {
-            animationEnabled: true,
-            theme: "light2",
-            title: {
-                text: "Lenovo Group Stock Price-2017"
-            },
-            axisY: {
-                title: "In HK$",
-                titleFontSize: 24
-            },
-            data: [{
-                type: "line",
-                yValueFormatString: "HK$#,###",
-                dataPoints: dataPoints
-            }]
-        });
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "Lenovo Group Stock Price-2017"
+                },
+                axisY: {
+                    title: "In HK$",
+                    titleFontSize: 24
+                },
+                data: [{
+                    type: "line",
+                    yValueFormatString: "HK$#,###",
+                    dataPoints: dataPoints
+                }]
+            });
 
-        function addData(data) {
-            for (var i = 0; i < data.length; i++) {
-                dataPoints.push({
-                    x: new Date(data[i].x),
-                    y: data[i].y
-                });
+            function addData(data) {
+                for (var i = 0; i < data.length; i++) {
+                    dataPoints.push({
+                        x: new Date(data[i].x),
+                        y: data[i].y
+                    });
+                }
+                chart.render();
+
             }
-            chart.render();
+
+            $.getJSON("/home/json", addData);
 
         }
-
-        $.getJSON("/home/json", addData);
-
-    }
-</script>*@
+    </script>*@
 
