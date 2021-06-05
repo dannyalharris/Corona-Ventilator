@@ -1,8 +1,9 @@
 ﻿USE [Corona-Ventilator-Database]
 GO
+DELETE FROM Patient
 DECLARE @Counter INT 
 SET @Counter=1
-WHILE ( @Counter <= 10000)
+WHILE (1=1)
 BEGIN
     INSERT INTO Patient(Timestamp, O2Level) Values ('20100301', @Counter)
     PRINT 'The counter value is = ' + CONVERT(VARCHAR,@Counter)
