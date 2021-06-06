@@ -1,10 +1,9 @@
 ﻿@page
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Corona_Ventilator.Pages.PatientsData.IndexModel
-
 @{
     ViewData["Title"] = "Index";
 }
-
 <h1>Index</h1>
 
 <p>
@@ -23,20 +22,128 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Patient) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Timestamp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.O2Level)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Patient)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Timestamp)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.O2Level)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<h1>Patient's Data</h1>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                BAR CHART
+            </div>
+            <div class="card-body">
+                <canvas class="my-4 h-25" id="bar"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                PIE CHART
+            </div>
+            <div class="card-body">
+                <canvas class="my-4 h-25" id="pie"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                LINE CHART
+            </div>
+            <div class="card-body">
+                <canvas class="my-4 h-25" id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div id="chartContainer" style="height: 100%; width: 100%;"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+
+<script type="text/javascript">
+    var barchart = document.getElementById('bar').getContext('2d');
+    var mybarchart = new Chart(barchart, {
+        type: 'bar',
+        data: {
+            labels: ['001', '002', '003'],
+            datasets: [{
+                label: 'Bar Chart',
+                data: [100, 200, 300],
+                backgroundColor: 'rgba(100,128,200)'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    })
+
+    var piechart = document.getElementById('pie').getContext('2d');
+    var mypiechart = new Chart(piechart, {
+        type: 'pie',
+        data: {
+            labels: ['001', '002', '003'],
+            datasets: [{
+                label: 'Pie Chart',
+                data: [100, 200, 300],
+                backgroundColor: 'rgba(6,128,122)'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    })
+
+    var linechart = document.getElementById('myChart').getContext('2d');
+    console.log("Chart Data : " + @Html.Raw(Model.ChartData));
+    console.log("Chart Time : " + @Html.Raw(Model.ChartTimestamp));
+    var mylinechart = new Chart(linechart, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Model.ChartTimestamp),
+            datasets: [{
+                label: 'Test Data',
+                data: @Html.Raw(Model.ChartData),
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1,
+
+            }]
+        },
+    })
+</script>
+
+
+
+
