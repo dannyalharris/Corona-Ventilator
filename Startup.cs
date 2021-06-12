@@ -12,6 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Corona_Ventilator.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Corona_Ventilator
 {
@@ -27,16 +32,30 @@ namespace Corona_Ventilator
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var myMaxModelBindingCollectionSize = Convert.ToInt32(
+                Configuration["MyMaxModelBindingCollectionSize"] ?? "100");
+
+            services.Configure<MvcOptions>(options =>
+                   options.MaxModelBindingCollectionSize = myMaxModelBindingCollectionSize);
+
+            services.AddSignalR();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+            
             services.AddDatabaseDeveloperPageExceptionFilter();
+            
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            
             services.AddRazorPages();
 
             services.AddDbContext<Corona_VentilatorContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Corona_VentilatorContext")));
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,10 +73,21 @@ namespace Corona_Ventilator
                 app.UseHsts();
             }
 
+            app.Use(async (context, next) =>
+            {
+                await next();
+            });
+
+            app.UseFileServer();
+
+            app.UseCors("Everything");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            //app.UseSignalR(routes => routes.MapHub("/ApplicationHub"));
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -65,6 +95,7 @@ namespace Corona_Ventilator
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ApplicationHub>("/ApplicationHub");
             });
         }
     }

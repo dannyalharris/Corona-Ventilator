@@ -4,46 +4,25 @@
 @{
     ViewData["Title"] = "Index";
 }
-<h1>Index</h1>
-
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Patient[0].Timestamp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Patient[0].O2Level)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Patient)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Timestamp)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.O2Level)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
 <h1>Patient's Data</h1>
 
+
 <div class="row">
+    <div class="col-sm">
+        <div class="card">
+            <div class="card-header">
+                LINE CHART
+            </div>
+            <div class="card-body">
+                <canvas class="my-4 h-25" id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id="chartContainer2" style="height: 100%; width: 100%;"></div>
+</div>
+
+<div class="row" id="ChartDisplay">
     <div class="col-sm-6">
         <div class="card">
             <div class="card-header">
@@ -64,7 +43,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6">
+    @*<div class="col-sm-6">
         <div class="card">
             <div class="card-header">
                 LINE CHART
@@ -73,14 +52,47 @@
                 <canvas class="my-4 h-25" id="myChart"></canvas>
             </div>
         </div>
-    </div>
+    </div>*@
     <div id="chartContainer" style="height: 100%; width: 100%;"></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!-- MQTT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+<script src="~/js/Data.js"></script>
+
+@*<script type="text/javascript">
+
+    var mqtt;
+    var reconnectTimeout = 2000;
+    var host = "broker.hivemq.com";
+    var port = 8000;
+
+    //function onConnect() {
+    //    var message_ESPSet = new Paho.MQTT.Message(messagepayloadstring_ESPSet);
+    //}
+
+    startConnection();
+
+    function startConnection() {
+        connection.start()
+            .then(() => {
+                console.log('connected!')
+
+                plotLineChart();
+            })
+            .catch(console.error);
+    }
+
+    function reconnect() {
+        console.log('reconnecting...');
+        setTimeout(startConnection, 2000);
+    }
 
 
-<script type="text/javascript">
     var barchart = document.getElementById('bar').getContext('2d');
     var mybarchart = new Chart(barchart, {
         type: 'bar',
@@ -125,24 +137,70 @@
         }
     })
 
-    var linechart = document.getElementById('myChart').getContext('2d');
-    console.log("Chart Data : " + @Html.Raw(Model.ChartData));
-    console.log("Chart Time : " + @Html.Raw(Model.ChartTimestamp));
-    var mylinechart = new Chart(linechart, {
-        type: 'line',
-        data: {
-            labels: @Html.Raw(Model.ChartTimestamp),
-            datasets: [{
-                label: 'Test Data',
-                data: @Html.Raw(Model.ChartData),
-                fill: false,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1,
+    function plotLineChart()
+    {
+        var linechart = document.getElementById('myChart').getContext('2d');
+        console.log("Chart Data : " + @Html.Raw(Model.ChartData));
+        console.log("Chart Time : " + @Html.Raw(Model.ChartTimestamp));
 
-            }]
-        },
-    })
-</script>
+        //var auto_refresh = setInterval(
+        //    function () {
+                var mylinechart = new Chart(linechart, {
+                    type: 'line',
+                    data: {
+                        labels: @Html.Raw(Model.ChartTimestamp),
+                        datasets: [{
+                            label: 'Test Data',
+                            data: @Html.Raw(Model.ChartData),
+                            fill: false,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1,
+                        }]
+                    },
+                });
+            /*}, 1000);*/
+        //window.location = window.location;
+
+    }
+
+</script>*@
+
+@*<h1>Index</h1>
+
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Patient[0].Timestamp)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Patient[0].O2Level)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Patient)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Timestamp)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.O2Level)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
 
 
 
